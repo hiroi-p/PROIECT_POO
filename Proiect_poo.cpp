@@ -4,7 +4,7 @@
 #include <list>
 #include <regex>
 using namespace std;
-//ce simplu era daca foloseam listele de la inceput <3 <3 
+// ce simplu era daca foloseam listele de la inceput <3 <3
 void Meniu_conectare();
 void Meniu_Autentificat();
 void Meniu_principal();
@@ -13,24 +13,27 @@ void Meniu_Rezervare();
 void Meniu_Istoric();
 void Meniu_Autentificare();
 void Meniu_Inregistrare();
-//Optiune folosim toate datele unui utilizator pe o linie(si impartim cu strtok).
-//Putem sa folosim un delimitator la finalul istoricului, ex:linie,spatiu ca sa delimitam userii
+// Optiune folosim toate datele unui utilizator pe o linie(si impartim cu strtok).
+// Putem sa folosim un delimitator la finalul istoricului, ex:linie,spatiu ca sa delimitam userii
 class Istoric
 {
 private:
     list<string> *tranzactii;
     int suma_totala;
-    public:
-    void adaugare(string tranzactie,int suma){
+
+public:
+    void adaugare(string tranzactie, int suma)
+    {
         tranzactii->push_back(tranzactie);
-        suma_totala=suma_totala+suma;
+        suma_totala = suma_totala + suma;
     }
 };
 class User
 {
 private:
     string nume, prenume, CNP, email, parola;
-     Istoric *ist;
+    Istoric *ist;
+
 public:
     User(string nume, string prenume, string CNP, string email, string parola)
     {
@@ -39,10 +42,11 @@ public:
         this->nume = nume;
         this->parola = parola;
         this->prenume = prenume;
-        ist=new Istoric;
+        ist = new Istoric;
     }
-    void adaugaree(string tranzactie,int suma){
-        ist->adaugare(tranzactie,suma);
+    void adaugaree(string tranzactie, int suma)
+    {
+        ist->adaugare(tranzactie, suma);
     }
     void afisare()
     {
@@ -50,7 +54,6 @@ public:
         cout << "Prenume:" << prenume << endl;
         cout << "CNP:" << CNP << endl;
         cout << "Email:" << email << endl;
-
     }
     string getNume()
     {
@@ -82,15 +85,16 @@ fstream &operator<<(fstream &fout, User *u)
     u->scriere_fisier(fout);
     return fout;
 }
-void citire_lista(list<User*> &lista_Utilizatori)
+void citire_lista(list<User *> &lista_Utilizatori)
 {
     User *u;
     fstream f;
-	f.open("Date_Utilizatori.txt", ios::in);
-    while (f >> u) {
-		lista_Utilizatori.push_back(u);
-	}
-	f.close();
+    f.open("Date_Utilizatori.txt", ios::in);
+    while (f >> u)
+    {
+        lista_Utilizatori.push_back(u);
+    }
+    f.close();
 }
 void Meniu_Inregistrare()
 {
@@ -150,7 +154,7 @@ etiketa:
 }
 void Meniu_Autentificare()
 {
-    string email, parola,linie;
+    string email, parola, linie;
     ifstream f("Date_Utilizatori.txt");
 eticheta:
     try
@@ -192,16 +196,19 @@ etiketa:
         flog.close();
         goto etiketa;
     }
-       while(getline(f,linie)){
-       regex emailRegex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
+    while (getline(f, linie))
+    {
+        regex emailRegex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
         if (regex_match(linie, emailRegex) == true)
         {
-           if(linie==email){
-            getline(f,linie);
-            if(linie==parola){
+            if (linie == email)
+            {
+                getline(f, linie);
+                if (linie == parola)
+                {
+                }
             }
-           }
-        } 
+        }
     }
 }
 void Meniu_conectare()
@@ -256,7 +263,7 @@ void Meniu_contact()
         }
     }
 }
-void Meniu_Autentificat(string email,string parola)
+void Meniu_Autentificat(string email, string parola)
 {
     int opt;
     while (1)
@@ -307,8 +314,8 @@ void Meniu_principal()
 int main()
 {
     int opt;
-    list<User*> lista_Utilizatori;
-    string chestie="adasdasdwq";
+    list<User *> lista_Utilizatori;
+    string chestie = "adasdasdwq";
     ofstream f(chestie);
     Meniu_principal();
     return 0;
