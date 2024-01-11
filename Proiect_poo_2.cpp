@@ -4,7 +4,7 @@
 #include <list>
 #include <regex>
 using namespace std;
-//ce simplu era daca foloseam listele de la inceput <3 <3 
+// ce simplu era daca foloseam listele de la inceput <3 <3
 void Meniu_conectare();
 void Meniu_Autentificat();
 void Meniu_principal();
@@ -13,18 +13,20 @@ void Meniu_Rezervare();
 void Meniu_Istoric();
 void Meniu_Autentificare();
 void Meniu_Inregistrare();
-//Optiune folosim toate datele unui utilizator pe o linie(si impartim cu strtok).
-//Putem sa folosim un delimitator la finalul istoricului, ex:linie,spatiu ca sa delimitam userii
-//Putem sa numim in fisier inainte de nume sa scriem Nume: inainte de prenume sa scriem Prenume: si asa mai departe
+// Optiune folosim toate datele unui utilizator pe o linie(si impartim cu strtok).
+// Putem sa folosim un delimitator la finalul istoricului, ex:linie,spatiu ca sa delimitam userii
+// Putem sa numim in fisier inainte de nume sa scriem Nume: inainte de prenume sa scriem Prenume: si asa mai departe
 
 class Tranzactie
 {
 private:
-    string carte;//sau carte- obiect
-    string tip_achizitie;//aici am modificat
+    string carte;         // sau carte- obiect
+    string tip_achizitie; // aici am modificat
     int suma;
+
 public:
-    Tranzactie(string carte, string tip_achizitie, int suma) {
+    Tranzactie(string carte, string tip_achizitie, int suma)
+    {
         this->carte = carte;
         this->tip_achizitie = tip_achizitie;
         this->suma = suma;
@@ -34,7 +36,8 @@ class User
 {
 private:
     string nume, prenume, CNP, email, parola;
-    list<Tranzactie*> istoric;
+    list<Tranzactie *> istoric;
+
 public:
     User(string nume, string prenume, string CNP, string email, string parola)
     {
@@ -44,12 +47,12 @@ public:
         this->parola = parola;
         this->prenume = prenume;
     }
-    void adaugaree(string carte,string tip_achizitie, int suma) {
-        fstream f("Date_Utilizatori.txt",ios::app);
-        Tranzactie* isto;
+    void adaugaree(string carte, string tip_achizitie, int suma)
+    {
+        fstream f("Date_Utilizatori.txt", ios::app);
+        Tranzactie *isto;
         isto = new Tranzactie(carte, tip_achizitie, suma);
         istoric.push_back(isto);
-
     }
     void afisare()
     {
@@ -57,7 +60,6 @@ public:
         cout << "Prenume:" << prenume << endl;
         cout << "CNP:" << CNP << endl;
         cout << "Email:" << email << endl;
-
     }
     string getNume()
     {
@@ -67,48 +69,51 @@ public:
     {
         return prenume;
     }
-    void scriere_fisier(fstream& fout)
+    void scriere_fisier(fstream &fout)
     {
         fout << nume << endl
-            << prenume << endl
-            << CNP << endl
-            << email << endl
-            << parola << endl;
+             << prenume << endl
+             << CNP << endl
+             << email << endl
+             << parola << endl;
         fout << "Istoric:" << endl;
     }
-    //functia de autentificare se poate face aici
-    //functia de resetare parola se poate face aici, precum toate celelalte functii care au legatura cu continutul fisierului
+    // functia de autentificare se poate face aici
+    // functia de resetare parola se poate face aici, precum toate celelalte functii care au legatura cu continutul fisierului
 };
-fstream& operator>>(fstream& fin, User* u)
+fstream &operator>>(fstream &fin, User *u)
 {
     string nume, prenume, CNP, email, parola;
     fin >> nume >> prenume;
     u = new User(nume, prenume, CNP, email, parola);
     return fin;
 }
-fstream& operator<<(fstream& fout, User* u)
+fstream &operator<<(fstream &fout, User *u)
 {
     u->scriere_fisier(fout);
     return fout;
 }
-void citire_lista(list<User*>& lista_Utilizatori)
+void citire_lista(list<User *> &lista_Utilizatori)
 {
-    User* u;
+    User *u;
     fstream f;
     f.open("Date_Utilizatori.txt", ios::in);
-    while (f >> u) {
+    while (f >> u)
+    {
         lista_Utilizatori.push_back(u);
     }
     f.close();
 }
 void Meniu_Inregistrare()
 {
-    User* u;
+    fstream f;
+    User *u;
     string nume, prenume, CNP, email, parola;
     cout << "Nume: ";
     cin >> nume;
     cout << "Prenume: ";
     cin >> prenume;
+    f.open(nume + "_" + prenume, ios::out);
     cout << "CNP: ";
     cin >> CNP;
 eticheta:
@@ -122,7 +127,7 @@ eticheta:
             throw logic_error("Adresa de email nu respecta formatul.");
         }
     }
-    catch (logic_error& e)
+    catch (logic_error &e)
     {
         fstream flog;
         flog.open("log.txt", ios::app);
@@ -142,7 +147,7 @@ etiketa:
             throw logic_error("Parola prea scurta");
         }
     }
-    catch (logic_error& e)
+    catch (logic_error &e)
     {
         fstream flog;
         flog.open("log.txt", ios::app);
@@ -152,15 +157,19 @@ etiketa:
         goto etiketa;
     }
     u = new User(nume, prenume, CNP, email, parola);
-    fstream f;
-    f.open("Date_Utilizatori.txt", ios::app);
     f << u;
     f.close();
+    fstream fi("Date_Utilizatori.txt", ios::app);
+    fi << email << endl
+       << nume + "_" + prenume << endl;
+    fi.close();
 }
 void Meniu_Autentificare()
 {
     string email, parola, linie;
     ifstream f("Date_Utilizatori.txt");
+    ifstream fi;
+    fstream flog;
 eticheta:
     try
     {
@@ -172,9 +181,8 @@ eticheta:
             throw logic_error("Adresa de email nu respecta formatul.");
         }
     }
-    catch (logic_error& e)
+    catch (logic_error &e)
     {
-        fstream flog;
         flog.open("log.txt", ios::app);
         flog << e.what() << endl;
         cout << e.what() << endl;
@@ -192,28 +200,56 @@ etiketa:
             throw logic_error("Parola prea scurta");
         }
     }
-    catch (logic_error& e)
+    catch (logic_error &e)
     {
-        fstream flog;
         flog.open("log.txt", ios::app);
         flog << e.what() << endl;
         cout << e.what() << endl;
         flog.close();
         goto etiketa;
     }
-    while (getline(f, linie)) {
+
+    while (getline(f, linie))
+    {
+    
         regex emailRegex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
         if (regex_match(linie, emailRegex) == true)
         {
-            if (linie == email) {
+            
+            if (linie == email)
+            {
+
                 getline(f, linie);
-                if (linie == parola) {
-                    Meniu_Autentificat(email, parola);
+                fi.open(linie);
+                for (int i = 1; i <= 5; i++)
+                {
+                    getline(fi, linie);
                 }
-            }
+                if (parola == linie)
+                {
+                    cout << "Autentificare cu succes";
+                }
+                else
+                {
+                    cout << "Date de autentificare eronate." << endl;
+                    flog.open("log.txt", ios::app);
+                    flog << "Date de autentificare eronate." << endl;
+                    flog.close();
+                    goto eticheta;
+                }
+            }   
+        }
+        if (f.eof() == 1)
+        {
+            flog.open("log.txt", ios::app);
+            flog << "Date de autentificare eronate." << endl;
+            cout << "Date de autentificare eronate" << endl;
+            flog.close();
+            goto eticheta;
         }
     }
 }
+
 void Meniu_conectare()
 {
     int opt;
@@ -230,6 +266,7 @@ void Meniu_conectare()
         Meniu_Inregistrare();
         break;
     case 2:
+        Meniu_Autentificare();
         break;
     case 3:
         break;
@@ -247,12 +284,12 @@ void Meniu_contact()
     while (1)
     {
         cout << "Suport tehnic" << endl
-            << "In cazul în care întâlniți dificultăți echipa de suport vă va sta la dispoziție." << endl
-            << "Tot ce trebuie să faceți este să completați următorul formular în care trebuie descrisă problema." << endl
-            << "Alegeți o opțiune:" << endl
-            << "     1. Trimitere sesizare" << endl
-            << "     2. Inapoi" << endl
-            << "Optiune: ";
+             << "In cazul în care întâlniți dificultăți echipa de suport vă va sta la dispoziție." << endl
+             << "Tot ce trebuie să faceți este să completați următorul formular în care trebuie descrisă problema." << endl
+             << "Alegeți o opțiune:" << endl
+             << "     1. Trimitere sesizare" << endl
+             << "     2. Inapoi" << endl
+             << "Optiune: ";
         cin >> opt;
         switch (opt)
         {
@@ -266,7 +303,7 @@ void Meniu_contact()
         }
     }
 }
-void Meniu_Autentificat(string email, string parola)
+void Meniu_Autentificat(string email)
 {
     int opt;
     while (1)
@@ -293,8 +330,8 @@ void Meniu_principal()
     int opt;
     cout << "-------------------------------" << endl;
     cout << "Bookstore app" << endl
-        << endl
-        << endl;
+         << endl
+         << endl;
     cout << "Alegeti o optiune: " << endl;
     cout << "1.Conectare" << endl;
     cout << "2.Contact" << endl;
@@ -317,7 +354,7 @@ void Meniu_principal()
 int main()
 {
     int opt;
-    list<User*> lista_Utilizatori;
+    list<User *> lista_Utilizatori;
     string chestie = "adasdasdwq";
     ofstream f(chestie);
     Meniu_principal();
